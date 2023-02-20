@@ -43,7 +43,7 @@ async function validateAccountByToken(token) {
     let errors = null;
 
     if (!account) {
-        errors = { accountDoesNotExist: 'Estimado usuario, esta cuenta no existe. Por favor, registrese.' }
+        errors = { accountDoesNotExist: 'Estimado usuario, es posible que este token sea invalido o la cuenta no exista. Intente de nuevo...' }
     }
 
     return errors != null ? errors : account;

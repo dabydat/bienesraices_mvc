@@ -1,4 +1,6 @@
 import express from 'express'
+import csrf from 'csurf'
+import cookieParser from 'cookie-parser'
 import usuarioRoutes from './routes/usuarioRoutes.js'
 import db from './config/db.js'
 
@@ -7,6 +9,12 @@ const APP = express()
 
 // Habilitar lectura de datos de formulario
 APP.use(express.urlencoded({ extended: true }))
+
+// Habilitar cookie Parser
+APP.use(cookieParser())
+
+// Habilitar CSRF
+APP.use(csrf({ cookie: true }))
 
 // Conexion a la BBDD
 try {

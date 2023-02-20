@@ -10,7 +10,8 @@ const formularioLogin = (request, response) => {
 
 const formularioRegister = (request, response) => {
     response.render('auth/register', {
-        pageName: 'Sign Up'
+        pageName: 'Sign Up',
+        csrfToken:request.csrfToken()
     });
 }
 
@@ -27,6 +28,7 @@ const sendRegister = async (request, response) => {
     if (!resultado.isEmpty() || userExists != null) {
         return response.render('auth/register', {
             pageName: 'Sign Up',
+            csrfToken:request.csrfToken(),
             errors,
             usuario: { nombre, email }
         });
@@ -42,17 +44,31 @@ const sendRegister = async (request, response) => {
     });
 
     // Mostrar mensaje de confirmacion
-    response.render('templates/token', {
-        pagina: 'Cuentra creada correctamente',
+    response.render('templates/mensaje', {
+        pageName: 'Cuentra creada correctamente',
         mensaje: 'Hemos enviado un Email de Confirmacion, presiona en el enlace'
     });
 }
 
-
-
 const confirmAccount = async (request, response, next) => {
     let account = await validateAccountByToken(request.params.token);
-    console.log(account);
+
+    if (account.accountDoesNotExist) {
+        return response.render('auth/confirmar-cuenta', {
+            pageName: 'Error al confirmar tu cuenta',
+            mensaje: account.accountDoesNotExist,
+            error: true
+        });
+    }
+
+    // Confirmar cuenta
+    account.token = null;
+    account.confirmed = true;
+    await account.save();
+    response.render('auth/confirmar-cuenta', {
+        pageName: 'Cuenta confirmada',
+        mensaje: 'La cuenta ha sido confirmada correctamente.'
+    });
 }
 
 const formularioRecoverPassword = (request, response) => {

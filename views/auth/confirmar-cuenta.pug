@@ -1,0 +1,14 @@
+extends ../layout/index
+
+block content
+    div.py-10
+        h1.text-4xl.my-10.font-extrabold.text-center Bienes
+            span.font-normal Raices
+        h2.text-center.text-2xl.font-extrabold= pageName
+    
+    div(class="bg-white shadow py-8 px-4 rounded-lg max-w-md mx-auto")
+        p(class= error ? 'bg-red-500' : 'bg-green-500').py-2.px-5.rounded-lg.w-full.font-bold.text-center.text-white.uppercase= mensaje
+
+    if !error
+        div(class="mt-5 bg-white shadow py-8 px-4 rounded-lg max-w-md mx-auto")
+            a(class="text-center font-bold text-sm text-white uppercase block rounded bg-indigo-800 p-3" href="/auth/login") Inicia Sesion

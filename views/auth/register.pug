@@ -13,6 +13,7 @@ block content
         div.mt-8.mx-auto.max-w-md
             div.bg-white.py-8.px-4.shadow
                 form.space-y-5(method="POST" action="/auth/register")
+                    input(type="hidden" name="_csrf" value= csrfToken)
                     div
                         label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="nombre") Nombre y Apellido
                         input#nombre.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(placeholder="Ingrese su Nombre..." type="text" name="nombre" value=usuario ? usuario.nombre : "")
@@ -29,14 +30,14 @@ block content
 
                     div
                         label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="password") Contraseña
-                        input#password.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(placeholder="Ingrese su contraseña..." type="text" name="password")
+                        input#password.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(placeholder="Ingrese su contraseña..." type="password" name="password")
                         if errors && errors.passwordError != null 
                             include partials/error.pug
                                 span.text-red-600.text-xs.ml-1= errors.passwordError
 
                     div
                         label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="repetir_password") Confirmar Contraseña
-                        input#repetir_password.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(placeholder="Confirme su contraseña..." type="text" name="repetir_password")
+                        input#repetir_password.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(placeholder="Confirme su contraseña..." type="password" name="repetir_password")
                         if errors && errors.confirmPasswordError != null 
                             include partials/error.pug
                                 span.text-red-600.text-xs.ml-1= errors.confirmPasswordError

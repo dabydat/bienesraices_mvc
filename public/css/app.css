@@ -518,11 +518,11 @@ video {
 .mb-1 {
   margin-bottom: 0.25rem;
 }
-.mt-1 {
-  margin-top: 0.25rem;
-}
 .ml-1 {
   margin-left: 0.25rem;
+}
+.mt-1 {
+  margin-top: 0.25rem;
 }
 .mt-10 {
   margin-top: 2.5rem;
@@ -688,4 +688,8 @@ video {
 .hover\:bg-indigo-800:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(55 48 163 / var(--tw-bg-opacity));
+}
+.hover\:text-indigo-800:hover {
+  --tw-text-opacity: 1;
+  color: rgb(55 48 163 / var(--tw-text-opacity));
 }

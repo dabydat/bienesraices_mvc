@@ -3,6 +3,7 @@ import { findUserExistence, createUser, validateAccountByToken } from "../servic
 import { emailRegister, emailRecoverPassword } from "../helpers/email.js";
 import { createErrors } from "../helpers/errors.js";
 import { generarId } from "../helpers/token.js";
+import bcrypt from "bcrypt";
 
 
 const formularioLogin = (request, response) => {
@@ -121,17 +122,16 @@ const resetPassword = async (request, response) => {
 
     // Mostrar mensaje de confirmacion
     response.render('templates/mensaje', {
-        pageName: 'Reestablece tu contraseña',
+        pageName: 'Recover your password',
         mensaje: 'Hemos enviado un Email con las instrucciones.'
     });
 }
 
 const proveToken = async (request, response) => {
     let account = await validateAccountByToken(request.params.token);
-    console.log(account);
     if (account == 'error') {
         return response.render('auth/confirmar-cuenta', {
-            pageName: 'Reestablece tu contraseña',
+            pageName: 'Recover your password',
             mensaje: 'Hubo un error al validar tu informacion. Intente de nuevo...',
             error: true
         });
@@ -139,12 +139,38 @@ const proveToken = async (request, response) => {
 
     // Mostrar formulario para modificar la contraseña
     response.render('auth/reset-password', {
-        pageName: 'Reestablece tu contraseña'
+        pageName: 'Recover your password',
+        csrfToken: request.csrfToken()
     });
 }
 
-const newPassword = (request, response) => {
+const newPassword = async (request, response) => {
+    // Validar el password
+    await check('password').isLength({ min: 6 }).withMessage('La contraseña debe contener al menos 6 carácteres').run(request)
+    let resultado = validationResult(request);
+    // Errores de envio de formulario
+    let errors = createErrors(resultado.array());
+    console.log(errors);
+    if (!resultado.isEmpty()) {
+        return response.render('auth/reset-password', {
+            pageName: 'Recover your password',
+            csrfToken: request.csrfToken(),
+            errors
+        });
+    }
 
+    // Identificar quien hace el cambio 
+    let user = await validateAccountByToken(request.params.token);
+
+    // Hashear el nuevo password
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(request.body.password, salt);
+    user.token = null;
+    await user.save();
+    response.render('auth/confirmar-cuenta', {
+        pageName: 'Password recovered',
+        mensaje: 'La contraseña se ha guardado correctamente.'
+    });
 }
 
 export {

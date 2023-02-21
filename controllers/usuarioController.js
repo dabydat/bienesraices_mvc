@@ -1,6 +1,9 @@
 import { check, validationResult } from "express-validator";
-import { createUsuarioErrors, findUserExistence, createUser, validateAccountByToken } from "../services/usuarioService.js";
-import { emailRegister } from "../helpers/email.js";
+import { findUserExistence, createUser, validateAccountByToken } from "../services/usuarioService.js";
+import { emailRegister, emailRecoverPassword } from "../helpers/email.js";
+import { createErrors } from "../helpers/errors.js";
+import { generarId } from "../helpers/token.js";
+
 
 const formularioLogin = (request, response) => {
     response.render('auth/login', {
@@ -11,29 +14,34 @@ const formularioLogin = (request, response) => {
 const formularioRegister = (request, response) => {
     response.render('auth/register', {
         pageName: 'Sign Up',
-        csrfToken:request.csrfToken()
+        csrfToken: request.csrfToken()
     });
 }
 
 const sendRegister = async (request, response) => {
     const { nombre, email, password } = request.body;
-    // Validacion
+    // Validacion de campos de formulario
     await check('nombre').notEmpty().withMessage('El nombre no puede ir vacío').run(request)
     await check('email').isEmail().withMessage('No cumple con el formato de un correo').run(request)
     await check('password').isLength({ min: 6 }).withMessage('La contraseña debe contener al menos 6 carácteres').run(request)
     await check('repetir_password').equals(password).withMessage('Las contraseñas no coinciden').run(request)
     let resultado = validationResult(request);
+    // Validacion de usuario en la BD
     let userExists = await findUserExistence(email);
-    let errors = userExists != null ? userExists : createUsuarioErrors(resultado);
-    if (!resultado.isEmpty() || userExists != null) {
+    // Errores de envio de formulario
+    let errors = createErrors(resultado.array());
+    errors = userExists == 'error' ? { ...errors, userExists: 'Estimado usuario, ya existe un usuario con el correo anteriomente indicado.' } : errors;
+
+    if (!resultado.isEmpty() || userExists == 'error') {
         return response.render('auth/register', {
             pageName: 'Sign Up',
-            csrfToken:request.csrfToken(),
+            csrfToken: request.csrfToken(),
             errors,
             usuario: { nombre, email }
         });
     }
 
+    // Creacion de usuario
     const userCreated = await createUser(nombre, email, password);
 
     // Envia email de confirmacion
@@ -53,10 +61,10 @@ const sendRegister = async (request, response) => {
 const confirmAccount = async (request, response, next) => {
     let account = await validateAccountByToken(request.params.token);
 
-    if (account.accountDoesNotExist) {
+    if (account == 'error') {
         return response.render('auth/confirmar-cuenta', {
             pageName: 'Error al confirmar tu cuenta',
-            mensaje: account.accountDoesNotExist,
+            mensaje: 'Estimado usuario, es posible que este token sea invalido o la cuenta no exista. Intente de nuevo...',
             error: true
         });
     }
@@ -73,8 +81,70 @@ const confirmAccount = async (request, response, next) => {
 
 const formularioRecoverPassword = (request, response) => {
     response.render('auth/recoverPassword', {
-        pageName: 'Recover your Password'
+        pageName: 'Recover your Password',
+        csrfToken: request.csrfToken(),
     });
+}
+
+const resetPassword = async (request, response) => {
+    const { email } = request.body;
+    await check('email').isEmail().withMessage('No cumple con el formato de un correo').run(request)
+    let resultado = validationResult(request);
+    let errors = createErrors(resultado.array());
+
+    if (!resultado.isEmpty()) {
+        return response.render('auth/recoverPassword', {
+            pageName: 'Recover your password',
+            csrfToken: request.csrfToken(),
+            errors
+        });
+    }
+
+    let user = await findUserExistence(email);
+    if (user == 'error') {
+        errors = user == 'error' ? { ...errors, userDoesNotExists: 'Este email no se encuentra asignado a ningun usuario.' } : errors;
+        return response.render('auth/recoverPassword', {
+            pageName: 'Recover your password',
+            csrfToken: request.csrfToken(),
+            errors
+        });
+    }
+
+    // Generar token
+    user.token = generarId();
+    await user.save();
+
+    // Enviar Email
+    emailRecoverPassword({
+        email: user.email, nombre: user.nombre, token: user.token
+    });
+
+    // Mostrar mensaje de confirmacion
+    response.render('templates/mensaje', {
+        pageName: 'Reestablece tu contraseña',
+        mensaje: 'Hemos enviado un Email con las instrucciones.'
+    });
+}
+
+const proveToken = async (request, response) => {
+    let account = await validateAccountByToken(request.params.token);
+    console.log(account);
+    if (account == 'error') {
+        return response.render('auth/confirmar-cuenta', {
+            pageName: 'Reestablece tu contraseña',
+            mensaje: 'Hubo un error al validar tu informacion. Intente de nuevo...',
+            error: true
+        });
+    }
+
+    // Mostrar formulario para modificar la contraseña
+    response.render('auth/reset-password', {
+        pageName: 'Reestablece tu contraseña'
+    });
+}
+
+const newPassword = (request, response) => {
+
 }
 
 export {
@@ -82,5 +152,8 @@ export {
     formularioRegister,
     sendRegister,
     confirmAccount,
-    formularioRecoverPassword
+    formularioRecoverPassword,
+    resetPassword,
+    proveToken,
+    newPassword
 }

@@ -1,9 +1,10 @@
 import express from "express";
-import { formularioLogin, formularioRegister, sendRegister, formularioRecoverPassword, confirmAccount, resetPassword, proveToken, newPassword } from "../controllers/usuarioController.js";
+import { formularioLogin, authenticate, formularioRegister, sendRegister, formularioRecoverPassword, confirmAccount, resetPassword, proveToken, newPassword } from "../controllers/usuarioController.js";
 
 const ROUTER = express.Router();
 
 ROUTER.get('/login', formularioLogin);
+ROUTER.post('/login', authenticate);
 
 ROUTER.get('/register', formularioRegister);
 ROUTER.post('/register', sendRegister);

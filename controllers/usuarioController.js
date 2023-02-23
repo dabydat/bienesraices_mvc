@@ -3,6 +3,11 @@ import { emailRegister, emailRecoverPassword } from "../helpers/email.js";
 import { createErrors } from "../helpers/errors.js";
 import { generarId } from "../helpers/token.js";
 import bcrypt from "bcrypt";
+import { GLOBAL_ERROR } from "../utils/constantsInfo/errorMessages.js"
+import { GLOBAL_SUCCESS } from "../utils/constantsInfo/successMessages.js"
+
+const { EMAIL_NOT_ASSIGNED, ACCOUNT_NOT_CONFIRMED, EMAIL_EXISTING, INVALID_TOKEN_OR_WRONG_EMAIL, TOKEN_ERROR } = GLOBAL_ERROR
+const { EMAIL_SENT, ACCOUNT_CONFIRMED, RESET_PASSWORD, SAVED_PASSWORD } = GLOBAL_SUCCESS
 
 
 const formularioLogin = (req, res) => {
@@ -20,7 +25,7 @@ const authenticate = async (req, res) => {
     let errors = await createErrors(req, 'login');
     // Validacion de usuario en la BD
     let userExists = await findUserExistence(req.body.email);
-    errors = req.body.email == '' || req.body.password == '' ? errors : (userExists == 'error' && req.body.email != '' ? { ...errors, userError: 'Este email no se encuentra asignado a ningun usuario.' } : (req.body.email != '' && userExists.confirmed != true ? { ...errors, userError: 'Tu cuenta no ha sido confirmada aún.' } : null));
+    errors = req.body.email == '' || req.body.password == '' ? errors : (userExists == 'error' && req.body.email != '' ? { ...errors, userError: EMAIL_NOT_ASSIGNED } : (req.body.email != '' && userExists.confirmed != true ? { ...errors, userError: ACCOUNT_NOT_CONFIRMED } : null));
     components = errors != null ? { ...components, errors } : components;
     if (errors != null) {
         return res.render('auth/login', components);
@@ -43,7 +48,7 @@ const sendRegister = async (req, res) => {
     // Errores de envio de formulario
     let errors = await createErrors(req, 'register');
     if (errors != null || userExists != 'error') {
-        errors = userExists != 'error' && email != '' ? { ...errors, userExists: 'Estimado usuario, ya existe un usuario con el correo anteriomente indicado.'} : errors;
+        errors = userExists != 'error' && email != '' ? { ...errors, userExists: EMAIL_EXISTING } : errors;
         return res.render('auth/register', { pageName: 'Sign Up', csrfToken: req.csrfToken(), usuario: { nombre, email }, errors });
     }
 
@@ -60,7 +65,7 @@ const sendRegister = async (req, res) => {
     // Mostrar mensaje de confirmacion
     res.render('templates/mensaje', {
         pageName: 'Cuentra creada correctamente',
-        mensaje: 'Hemos enviado un Email de Confirmacion, presiona en el enlace'
+        mensaje: EMAIL_SENT
     });
 }
 
@@ -70,7 +75,7 @@ const confirmAccount = async (req, res) => {
     if (account == 'error') {
         return res.render('auth/confirmar-cuenta', {
             pageName: 'Error al confirmar tu cuenta',
-            mensaje: 'Estimado usuario, es posible que este token sea invalido o la cuenta no exista. Intente de nuevo...',
+            mensaje: INVALID_TOKEN_OR_WRONG_EMAIL,
             error: true
         });
     }
@@ -81,7 +86,7 @@ const confirmAccount = async (req, res) => {
     await account.save();
     res.render('auth/confirmar-cuenta', {
         pageName: 'Cuenta confirmada',
-        mensaje: 'La cuenta ha sido confirmada correctamente.'
+        mensaje: ACCOUNT_CONFIRMED
     });
 }
 
@@ -106,7 +111,7 @@ const resetPassword = async (req, res) => {
 
     let user = await findUserExistence(email);
     if (user == 'error') {
-        errors = user == 'error' ? { ...errors, userDoesNotExists: 'Este email no se encuentra asignado a ningun usuario.' } : errors;
+        errors = user == 'error' ? { ...errors, userDoesNotExists: EMAIL_NOT_ASSIGNED } : errors;
         return res.render('auth/recoverPassword', {
             pageName: 'Recover your password',
             csrfToken: req.csrfToken(),
@@ -126,7 +131,7 @@ const resetPassword = async (req, res) => {
     // Mostrar mensaje de confirmacion
     res.render('templates/mensaje', {
         pageName: 'Recover your password',
-        mensaje: 'Hemos enviado un Email con las instrucciones.'
+        mensaje: RESET_PASSWORD
     });
 }
 
@@ -135,7 +140,7 @@ const proveToken = async (req, res) => {
     if (account == 'error') {
         return res.render('auth/confirmar-cuenta', {
             pageName: 'Recover your password',
-            mensaje: 'Hubo un error al validar tu informacion. Intente de nuevo...',
+            mensaje: TOKEN_ERROR,
             error: true
         });
     }
@@ -168,7 +173,7 @@ const newPassword = async (req, res) => {
     await user.save();
     res.render('auth/confirmar-cuenta', {
         pageName: 'Password recovered',
-        mensaje: 'La contraseña se ha guardado correctamente.'
+        mensaje: SAVED_PASSWORD
     });
 }
 

@@ -1,7 +1,9 @@
-import {
-    check,
-    validationResult
-} from "express-validator";
+import { check, validationResult } from "express-validator";
+import { FORM_ERROR } from "../utils/constantsInfo/errorMessages.js"
+import { REGISTER, LOGIN, RECOVER_PASSWORD, NEW_PASSWORD } from "../utils/inputsFormsRequired.js"
+
+const { email, password } = FORM_ERROR.LOGIN
+const { nombre, email: register_email, password: password_register, repetir_password } = FORM_ERROR.DEFAULT
 
 async function createErrors(req, form) {
     let errors = {
@@ -11,10 +13,10 @@ async function createErrors(req, form) {
         confirmPasswordError: null
     };
 
-    if (verifyFieldInForm(form, 'email')) await check('email').isEmail().withMessage(form == 'login' ? 'El email es obligatorio' : 'No cumple con el formato de un correo').run(req)
-    if (verifyFieldInForm(form, 'password')) await check('password').notEmpty().withMessage(form == 'login' ? 'La contraseña es obligatorio' : 'La contraseña debe contener al menos 6 carácteres').run(req)
-    if (verifyFieldInForm(form, 'nombre')) await check('nombre').notEmpty().withMessage('El nombre no puede ir vacío').run(req)
-    if (verifyFieldInForm(form, 'repetir_password')) await check('repetir_password').equals(req.body.password).withMessage('Las contraseñas no coinciden').run(req)
+    if (verifyFieldInForm(form, 'email')) await check('email').isEmail().withMessage(form == 'login' ? email : register_email).run(req)
+    if (verifyFieldInForm(form, 'password')) await check('password').notEmpty().withMessage(form == 'login' ? password : password_register).run(req)
+    if (verifyFieldInForm(form, 'nombre')) await check('nombre').notEmpty().withMessage(nombre).run(req)
+    if (verifyFieldInForm(form, 'repetir_password')) await check('repetir_password').equals(req.body.password).withMessage(repetir_password).run(req)
 
     let resultado = validationResult(req);
 
@@ -37,19 +39,19 @@ async function createErrors(req, form) {
 }
 
 const verifyFieldInForm = (form, field) => {
-    if (field in getForm(form)) return true
-}
-
-const getForm = (form) => {
     switch (form) {
         case 'register':
-            return {nombre: true,email: true,password: true,confirmPassword: true};
+            if (field in REGISTER) return true;
+            break;
         case 'login':
-            return {email: true, password: true};
+            if (field in LOGIN) return true;
+            break;
         case 'recoverPassword':
-            return {email: true};
+            if (field in RECOVER_PASSWORD) return true;
+            break;
         case 'newPassword':
-            return {password: true};
+            if (field in NEW_PASSWORD) return true;
+            break;
     }
 }
 

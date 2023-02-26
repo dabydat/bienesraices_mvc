@@ -1,6 +1,6 @@
 import { check, validationResult } from "express-validator";
 import { FORM_ERROR } from "../utils/constantsInfo/errorMessages.js"
-import { REGISTER, LOGIN, RECOVER_PASSWORD, NEW_PASSWORD } from "../utils/inputsFormsRequired.js"
+import { verifyFieldInForm } from "../utils/inputsFormsRequired.js"
 
 const { email, password } = FORM_ERROR.LOGIN
 const { nombre, email: register_email, password: password_register, repetir_password } = FORM_ERROR.DEFAULT
@@ -36,23 +36,6 @@ async function createErrors(req, form) {
     });
 
     return resultado.array() == [] ? null : errors;
-}
-
-const verifyFieldInForm = (form, field) => {
-    switch (form) {
-        case 'register':
-            if (field in REGISTER) return true;
-            break;
-        case 'login':
-            if (field in LOGIN) return true;
-            break;
-        case 'recoverPassword':
-            if (field in RECOVER_PASSWORD) return true;
-            break;
-        case 'newPassword':
-            if (field in NEW_PASSWORD) return true;
-            break;
-    }
 }
 
 export {

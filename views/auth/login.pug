@@ -7,7 +7,7 @@ block content
         h2.text-center.text-2xl.font-extrabold= pageName
 
         if errors && errors.userError != null
-            div(class="max-w-md mx-auto my-10")
+            div(class="max-w-md mx-auto my-5")
                 p.bg-red-600.text-white.uppercase.text-xs.text-center.p-2.mb-1.font-bold= errors.userError
 
         div.mt-8.mx-auto.max-w-md
@@ -17,20 +17,20 @@ block content
 
                     div
                         label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="email") Email
-                        input#email.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(placeholder="Ingrese su email..." type="text" name="email")
+                        input#email(class="w-full px-3 py-2 border rounded-md placeholder-gray-400" class=errors && errors.emailError ? "border-red-600  focus:outline-none" : "border-gray-300" placeholder="Ingrese su email..." type="text" name="email")
                         if errors && errors.emailError != null 
                             include partials/error.pug
                                 span.text-red-600.text-xs.ml-1= errors.emailError
 
                     div
                         label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="password") Contraseña
-                        input#password.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(placeholder="Ingrese su contraseña..." type="password" name="password")
+                        input#password(class="w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400" class=errors && errors.passwordError ? "border-red-600 focus:outline-none" : "border-gray-300" placeholder="Ingrese su contraseña..." type="password" name="password")
                         if errors && errors.passwordError != null 
                             include partials/error.pug
                                 span.text-red-600.text-xs.ml-1= errors.passwordError
 
                     div.flex.items-center.justify-between
-                        a.text-gray-500.text-xs(href="/auth/register") No tienes cuenta? Crea una
-                        a.text-gray-500.text-xs(href="/auth/recoverPassword") Olvide mi password
+                        a(class="text-gray-500 text-xs hover:text-indigo-800" href="/auth/register") No tienes cuenta? Crea una
+                        a(class="text-gray-500 text-xs hover:text-indigo-800" href="/auth/recoverPassword") Olvide mi password
 
                     input(class="w-full py-3 rounded cursor-pointer bg-indigo-600 hover:bg-indigo-800 text-white font-bold " type="submit" value="Login")

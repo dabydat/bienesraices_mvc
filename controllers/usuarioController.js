@@ -1,13 +1,14 @@
 import { findUserExistence, createUser, validateAccountByToken } from "../services/usuarioService.js";
 import { emailRegister, emailRecoverPassword } from "../helpers/email.js";
 import { createErrors } from "../helpers/errors.js";
-import { generarId } from "../helpers/token.js";
+import { generarId, generarJWT } from "../helpers/token.js";
 import bcrypt from "bcrypt";
-import { GLOBAL_ERROR } from "../utils/constantsInfo/errorMessages.js"
-import { GLOBAL_SUCCESS } from "../utils/constantsInfo/successMessages.js"
 
-const { EMAIL_NOT_ASSIGNED, ACCOUNT_NOT_CONFIRMED, EMAIL_EXISTING, INVALID_TOKEN_OR_WRONG_EMAIL, TOKEN_ERROR } = GLOBAL_ERROR
-const { EMAIL_SENT, ACCOUNT_CONFIRMED, RESET_PASSWORD, SAVED_PASSWORD } = GLOBAL_SUCCESS
+import { GLOBAL_ERROR } from "../utils/constantsInfo/errorMessages.js";
+import { GLOBAL_SUCCESS } from "../utils/constantsInfo/successMessages.js";
+
+const { EMAIL_NOT_ASSIGNED, ACCOUNT_NOT_CONFIRMED, EMAIL_EXISTING, INVALID_TOKEN_OR_WRONG_EMAIL, TOKEN_ERROR, INCORRECT_PASSWORD } = GLOBAL_ERROR;
+const { EMAIL_SENT, ACCOUNT_CONFIRMED, RESET_PASSWORD, SAVED_PASSWORD } = GLOBAL_SUCCESS;
 
 
 const formularioLogin = (req, res) => {
@@ -25,13 +26,17 @@ const authenticate = async (req, res) => {
     let errors = await createErrors(req, 'login');
     // Validacion de usuario en la BD
     let userExists = await findUserExistence(req.body.email);
-    errors = req.body.email == '' || req.body.password == '' ? errors : (userExists == 'error' && req.body.email != '' ? { ...errors, userError: EMAIL_NOT_ASSIGNED } : (req.body.email != '' && userExists.confirmed != true ? { ...errors, userError: ACCOUNT_NOT_CONFIRMED } : null));
+    errors = req.body.email == '' || req.body.password == '' ? errors : (userExists == 'error' && req.body.email != '' ? { ...errors, userError: EMAIL_NOT_ASSIGNED } : (req.body.email != '' && userExists.confirmed != true ? { ...errors, userError: ACCOUNT_NOT_CONFIRMED } : (!userExists.verifyPassword(req.body.password) ? { ...errors, userError: INCORRECT_PASSWORD } : null)));
     components = errors != null ? { ...components, errors } : components;
     if (errors != null) {
         return res.render('auth/login', components);
     }
 
-    console.log('auth');
+    if (userExists.verifyPassword(req.body.password)) {
+        // return res.render('auth/login', components);
+        const token = generarJWT(userExists.id)
+        console.log(token);
+    }
 }
 
 const formularioRegister = (req, res) => {

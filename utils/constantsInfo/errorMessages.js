@@ -16,5 +16,6 @@ export const GLOBAL_ERROR = {
     ACCOUNT_NOT_CONFIRMED: 'Tu cuenta no ha sido confirmada aún',
     EMAIL_EXISTING: 'Estimado usuario, ya existe un usuario con el correo anteriomente indicado',
     INVALID_TOKEN_OR_WRONG_EMAIL: 'Estimado usuario, es posible que este token sea invalido o la cuenta no exista. Intente de nuevo...',
-    TOKEN_ERROR:'Hubo un error al validar tu informacion. Intente de nuevo...'
+    TOKEN_ERROR:'Hubo un error al validar tu informacion. Intente de nuevo...',
+    INCORRECT_PASSWORD: 'Estimado usuario, la contraseña es incorrecta. Intente de nuevo...'
 }

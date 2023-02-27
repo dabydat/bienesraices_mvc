@@ -25,6 +25,7 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-validator": "^6.14.3",
+    "jsonwebtoken": "^9.0.0",
     "mariadb": "^3.0.2",
     "nodemailer": "^6.9.1",
     "pug": "^3.0.2",

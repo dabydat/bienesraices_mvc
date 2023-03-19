@@ -5,3 +5,7 @@ export const AUTH = {
     RECOVER_PASSWORD: '/recoverPassword',
     RECOVER_PASSWORD_WITH_TOKEN: '/recoverPassword/:token'
 }
+
+export const PROPIEDADES = {
+    HOME: '/mis-propiedades'
+}

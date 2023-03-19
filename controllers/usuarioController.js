@@ -35,7 +35,10 @@ const authenticate = async (req, res) => {
     if (userExists.verifyPassword(req.body.password)) {
         // return res.render('auth/login', components);
         const token = generarJWT(userExists.id)
-        console.log(token);
+
+        return res.cookie('_token', token, {
+            httpOnly:true,
+        }).redirect('/mis-propiedades');
     }
 }
 

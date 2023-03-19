@@ -2,6 +2,7 @@ import express from 'express'
 import csrf from 'csurf'
 import cookieParser from 'cookie-parser'
 import usuarioRoutes from './routes/usuarioRoutes.js'
+import propiedadesRoutes from './routes/propiedadesRoutes.js'
 import db from './config/db.js'
 
 // Crear la APP
@@ -31,6 +32,7 @@ APP.set('views', './views');
 
 // Routing
 APP.use('/auth', usuarioRoutes);
+APP.use('/', propiedadesRoutes);
 
 // Static files
 APP.use(express.static('public'))

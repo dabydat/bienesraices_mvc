@@ -18,7 +18,7 @@ const formularioLogin = (req, res) => {
     });
 }
 
-const authenticate = async (req, res) => {
+const sendLogin = async (req, res) => {
     let components = {
         pageName: 'Login',
         csrfToken: req.csrfToken()
@@ -105,7 +105,7 @@ const formularioRecoverPassword = (req, res) => {
     });
 }
 
-const resetPassword = async (req, res) => {
+const sendResetPassword = async (req, res) => {
     const { email } = req.body;
     let errors = await createErrors(req, 'recoverPassword');
 
@@ -143,7 +143,7 @@ const resetPassword = async (req, res) => {
     });
 }
 
-const proveToken = async (req, res) => {
+const generateToken = async (req, res) => {
     let account = await validateAccountByToken(req.params.token);
     if (account == 'error') {
         return res.render('auth/confirmar-cuenta', {
@@ -160,7 +160,7 @@ const proveToken = async (req, res) => {
     });
 }
 
-const newPassword = async (req, res) => {
+const sendNewPassword = async (req, res) => {
     // Errores de envio de formulario
     let errors = await createErrors(req, 'newPassword');
     if (req.body.password == '') {
@@ -187,12 +187,12 @@ const newPassword = async (req, res) => {
 
 export {
     formularioLogin,
-    authenticate,
+    sendLogin,
     formularioRegister,
     sendRegister,
     confirmAccount,
     formularioRecoverPassword,
-    resetPassword,
-    proveToken,
-    newPassword
+    sendResetPassword,
+    generateToken,
+    sendNewPassword
 }

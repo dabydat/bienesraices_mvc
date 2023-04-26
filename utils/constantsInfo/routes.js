@@ -7,5 +7,6 @@ export const AUTH = {
 }
 
 export const PROPIEDADES = {
-    HOME: '/mis-propiedades'
+    HOME: '/mis-propiedades',
+    CREATE: '/mis-propiedades/create'
 }

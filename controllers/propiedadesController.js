@@ -22,7 +22,12 @@ const createPropiedad = async (req, res) => {
     })
 }
 
+const savePropiedad = async (req, res) => {
+
+}
+
 export {
     admin,
-    createPropiedad
+    createPropiedad, 
+    savePropiedad
 }

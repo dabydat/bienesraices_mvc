@@ -8,6 +8,15 @@ export const FORM_ERROR = {
         email: 'No cumple con el formato de un correo',
         password: 'La contraseña debe contener al menos 6 carácteres',
         repetir_password: 'Las contraseñas no coinciden'
+    },
+    CREATE_PROPIEDAD: {
+        titulo: 'El titulo de la propiedad no puede ir vacío',
+        descripcion: 'La descripción debe contener al menos 15 caracteres',
+        categoria: 'Debe seleccionar una categoría',
+        precio: 'Debe seleccionar un precio',
+        habitaciones: 'Debe seleccionar cantidad de habitaciones',
+        estacionamiento: 'Debe seleccionar cantidad de estacionamiento',
+        banios: 'Debe seleccionar cantidad de baños'
     }
 }
 

@@ -10,58 +10,74 @@ block content
         h2.text-center.text-2xl.font-extrabold= pageName
 
         div(class="bg-white shadow py-8 px-4 rounded mx-auto max-w-4xl my-10 md:px-10")
-            form(action="" class="space-y-8")
+            form(class="space-y-8" method="POST" action="/mis-propiedades/create")
+                input(type="hidden" name="_csrf" value= csrfToken)
                 div(class="space-y-3")
                     h1(class="text-lg leading-6 font-medium text-gray-1000") Informacion General
                     p(class="text-gray-600") Añade informacion sobre la propiedad en venta
 
                 div
                     label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="titulo") Titulo de Anuncio
-                    input#titulo(class="w-full px-3 py-2 border rounded-md placeholder-gray-400" placeholder="Titulo de anuncio..." type="text" name="titulo")
-                    //- class=errors && errors.emailError ? "border-red-600  focus:outline-none" : "border-gray-300"
+                    input#titulo(class="w-full px-3 py-2 border rounded-md placeholder-gray-400" class=errors && errors.tituloPropiedadError ? "border-red-600  focus:outline-none" : "border-gray-300" placeholder="Titulo de anuncio..." type="text" name="titulo")
+                    if errors && errors.tituloPropiedadError != null 
+                            include ../partials/error.pug
+                                span.text-red-600.text-xs.ml-1= errors.tituloPropiedadError
                 div
                     label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="descripcion") Descripcion
-                    textarea#descripcion(class="w-full px-3 py-2 border rounded-md placeholder-gray-400" placeholder="Descripcion de anuncio..." name="descripcion")
-                
+                    textarea#descripcion(class="w-full px-3 py-2 border rounded-md placeholder-gray-400" class=errors && errors.descripcionPropiedadError ? "border-red-600  focus:outline-none" : "border-gray-300" placeholder="Descripcion de anuncio..." name="descripcion")
+                    if errors && errors.descripcionPropiedadError != null 
+                            include ../partials/error.pug
+                                span.text-red-600.text-xs.ml-1= errors.descripcionPropiedadError
                 div(class="md:flex md:gap-4 md:space-y-0 space-y-4")
                     div(class="md:w-1/2")
                         label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="categoria") Categoria
-                        select#categoria(class="w-full px-3 py-2 border rounded-md bg-white" name="categoria")
+                        select#categoria(class="w-full px-3 py-2 border rounded-md bg-white" class=errors && errors.categoriaPropiedadError ? "border-red-600  focus:outline-none" : "border-gray-300" name="categoria")
                             option(value="") - Seleccione una opcion -
                             each categoria in categorias
                                 option(value="categoria.id")= categoria.nombre
-
+                        if errors && errors.categoriaPropiedadError != null 
+                            include ../partials/error.pug
+                                span.text-red-600.text-xs.ml-1= errors.categoriaPropiedadError
                     div(class="md:w-1/2")
                         label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="precio") Precio
-                        select#precio(class="w-full px-3 py-2 border rounded-md bg-white" name="precio")
+                        select#precio(class="w-full px-3 py-2 border rounded-md bg-white" class=errors && errors.precioPropiedadError ? "border-red-600  focus:outline-none" : "border-gray-300" name="precio")
                             option(value="") - Seleccione una opcion -
                             each precio in precios
                                 option(value="precio.id")= precio.nombre
-
+                        if errors && errors.precioPropiedadError != null 
+                            include ../partials/error.pug
+                                span.text-red-600.text-xs.ml-1= errors.precioPropiedadError
                 div(class="md:flex md:gap-4 md:space-y-0 space-y-4")
                     div(class="md:w-1/3")
                         label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="habitaciones") Habitaciones
-                        select#habitaciones(class="w-full px-3 py-2 border rounded-md bg-white" name="habitaciones")
+                        select#habitaciones(class="w-full px-3 py-2 border rounded-md bg-white" class=errors && errors.habitacionesPropiedadError ? "border-red-600  focus:outline-none" : "border-gray-300" name="habitaciones")
                             option(value="") - Seleccione una opcion -
                             - var n = 1;
                                 while n < 10
                                     option(value=n) #{n++}
-
+                        if errors && errors.habitacionesPropiedadError != null 
+                            include ../partials/error.pug
+                                span.text-red-600.text-xs.ml-1= errors.habitacionesPropiedadError
                     div(class="md:w-1/3")
                         label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="estacionamiento") Estacionamiento
-                        select#estacionamiento(class="w-full px-3 py-2 border rounded-md bg-white" name="estacionamiento")
+                        select#estacionamiento(class="w-full px-3 py-2 border rounded-md bg-white" class=errors && errors.estacionamientoPropiedadError ? "border-red-600  focus:outline-none" : "border-gray-300" name="estacionamiento")
                             option(value="") - Seleccione una opcion -
                             - var n = 1;
                                 while n < 4
                                     option(value=n) #{n++}
-                    
+                        if errors && errors.estacionamientoPropiedadError != null 
+                            include ../partials/error.pug
+                                span.text-red-600.text-xs.ml-1= errors.estacionamientoPropiedadError
                     div(class="md:w-1/3")
                         label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="banios") Baños
-                        select#banios(class="w-full px-3 py-2 border rounded-md bg-white" name="banios")
+                        select#banios(class="w-full px-3 py-2 border rounded-md bg-white" class=errors && errors.baniosPropiedadError ? "border-red-600  focus:outline-none" : "border-gray-300" name="banios")
                             option(value="") - Seleccione una opcion -
                             - var n = 1;
                                 while n < 5
                                     option(value=n) #{n++}
+                        if errors && errors.baniosPropiedadError != null 
+                            include ../partials/error.pug
+                                span.text-red-600.text-xs.ml-1= errors.baniosPropiedadError
                 div.border-gray-200.border-t.py-5.space-y-5
                     h1(class="text-lg leading-6 font-medium text-gray-1000") Ubicacion
                     p(class="text-gray-600") Ubica la propiedad en el mapa
@@ -72,6 +88,9 @@ block content
                         input(type="hidden" id="calle" name="calle")
                         input(type="hidden" id="lat" name="lat")
                         input(type="hidden" id="lng" name="lng")
+
+                input(class="w-full py-3 rounded cursor-pointer bg-indigo-600 hover:bg-indigo-800 text-white font-bold " type="submit" value="Crear Propiedad")
+
 block scripts
     script(src="/js/leaflet.js")
     script(src="/js/esri-leaflet.js")

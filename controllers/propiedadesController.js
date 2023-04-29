@@ -34,7 +34,9 @@ const savePropiedad = async (req, res) => {
     }
     const errors = await createErrors(req, 'createPropiedad');
     if (errors != null) {
+        const { titulo, descripcion, categoria, precio, habitaciones, estacionamiento, banios } = req.body;
         components = errors != null ? { ...components, errors } : components;
+        components = { ...components, propiedad: { titulo, descripcion, categoria, precio, habitaciones, estacionamiento, banios } };
         return res.render('propiedades/create', components);
     }
     console.log(errors);

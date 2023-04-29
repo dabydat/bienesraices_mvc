@@ -27,12 +27,12 @@ async function createErrors(req, form) {
     if (verifyFieldInForm(form, 'repetir_password')) await check('repetir_password').equals(req.body.password).withMessage(repetir_password).run(req)
     //CREATE PROPIEDAD
     if (verifyFieldInForm(form, 'titulo')) await check('titulo').notEmpty().withMessage(titulo).run(req)
-    if (verifyFieldInForm(form, 'descripcion')) await check('descripcion').notEmpty().withMessage(descripcion).run(req)
-    if (verifyFieldInForm(form, 'categoria')) await check('categoria').notEmpty().withMessage(categoria).run(req)
-    if (verifyFieldInForm(form, 'precio')) await check('precio').notEmpty().withMessage(precio).run(req)
-    if (verifyFieldInForm(form, 'habitaciones')) await check('habitaciones').notEmpty().withMessage(habitaciones).run(req)
-    if (verifyFieldInForm(form, 'estacionamiento')) await check('estacionamiento').notEmpty().withMessage(estacionamiento).run(req)
-    if (verifyFieldInForm(form, 'banios')) await check('banios').notEmpty().withMessage(banios).run(req)
+    if (verifyFieldInForm(form, 'descripcion')) await check('descripcion').notEmpty().withMessage(descripcion).isLength({ min: 15 }).withMessage(descripcion).run(req)
+    if (verifyFieldInForm(form, 'categoria')) await check('categoria').isNumeric().withMessage(categoria).run(req)
+    if (verifyFieldInForm(form, 'precio')) await check('precio').isNumeric().withMessage(precio).run(req)
+    if (verifyFieldInForm(form, 'habitaciones')) await check('habitaciones').isNumeric().withMessage(habitaciones).run(req)
+    if (verifyFieldInForm(form, 'estacionamiento')) await check('estacionamiento').isNumeric().withMessage(estacionamiento).run(req)
+    if (verifyFieldInForm(form, 'banios')) await check('banios').isNumeric().withMessage(banios).run(req)
 
     let resultado = validationResult(req);
 

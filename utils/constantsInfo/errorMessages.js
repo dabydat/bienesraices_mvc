@@ -12,11 +12,11 @@ export const FORM_ERROR = {
     CREATE_PROPIEDAD: {
         titulo: 'El titulo de la propiedad no puede ir vacío',
         descripcion: 'La descripción debe contener al menos 15 caracteres',
-        categoria: 'Debe seleccionar una categoría',
-        precio: 'Debe seleccionar un precio',
-        habitaciones: 'Debe seleccionar cantidad de habitaciones',
-        estacionamiento: 'Debe seleccionar cantidad de estacionamiento',
-        banios: 'Debe seleccionar cantidad de baños'
+        categoria: 'Selecciona una categoría',
+        precio: 'Selecciona un precio',
+        habitaciones: 'Selecciona cantidad de habitaciones',
+        estacionamiento: 'Selecciona cantidad de estacionamiento',
+        banios: 'Selecciona cantidad de baños'
     }
 }
 

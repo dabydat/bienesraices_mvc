@@ -38,7 +38,7 @@ APP.use('/', propiedadesRoutes);
 APP.use(express.static('public'))
 
 // Definir un Puerto y Correr el proyecto
-const PORT = 3000
+const PORT = 8500
 
 APP.listen(process.env.PORT || PORT, () => {
     console.log(`El servidor esta funcionando en el puerto ${PORT}`);

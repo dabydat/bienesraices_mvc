@@ -24,7 +24,7 @@ block content
                                 span.text-red-600.text-xs.ml-1= errors.tituloPropiedadError
                 div
                     label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="descripcion") Descripcion
-                    textarea#descripcion(class="w-full px-3 py-2 border rounded-md placeholder-gray-400" class=errors && errors.descripcionPropiedadError ? "border-red-600  focus:outline-none" : "border-gray-300" placeholder="Descripcion de anuncio..." name="descripcion" value=propiedad ? propiedad.descripcion : "")
+                    textarea#descripcion(class="w-full px-3 py-2 border rounded-md placeholder-gray-400" class=errors && errors.descripcionPropiedadError ? "border-red-600  focus:outline-none" : "border-gray-300" placeholder="Descripcion de anuncio..." name="descripcion")=propiedad ? propiedad.descripcion : ""
                     if errors && errors.descripcionPropiedadError != null 
                             include ../partials/error.pug
                                 span.text-red-600.text-xs.ml-1= errors.descripcionPropiedadError
@@ -34,7 +34,7 @@ block content
                         select#categoria(class="w-full px-3 py-2 border rounded-md bg-white" class=errors && errors.categoriaPropiedadError ? "border-red-600  focus:outline-none" : "border-gray-300" name="categoria")
                             option(value="") - Seleccione una opcion -
                             each categoria in categorias
-                                option(value="categoria.id")= categoria.nombre
+                                option(value=categoria.id selected= propiedad ? propiedad.categoria == categoria.id ? true : false : null)= categoria.nombre
                         if errors && errors.categoriaPropiedadError != null 
                             include ../partials/error.pug
                                 span.text-red-600.text-xs.ml-1= errors.categoriaPropiedadError
@@ -43,7 +43,7 @@ block content
                         select#precio(class="w-full px-3 py-2 border rounded-md bg-white" class=errors && errors.precioPropiedadError ? "border-red-600  focus:outline-none" : "border-gray-300" name="precio")
                             option(value="") - Seleccione una opcion -
                             each precio in precios
-                                option(value="precio.id")= precio.nombre
+                                option(value=precio.id selected= propiedad ? propiedad.precio == precio.id ? true : false : null)= precio.nombre
                         if errors && errors.precioPropiedadError != null 
                             include ../partials/error.pug
                                 span.text-red-600.text-xs.ml-1= errors.precioPropiedadError
@@ -54,7 +54,7 @@ block content
                             option(value="") - Seleccione una opcion -
                             - var n = 1;
                                 while n < 10
-                                    option(value=n) #{n++}
+                                    option(value=n selected= propiedad ? propiedad.habitaciones == n ? true : false : null) #{n++}
                         if errors && errors.habitacionesPropiedadError != null 
                             include ../partials/error.pug
                                 span.text-red-600.text-xs.ml-1= errors.habitacionesPropiedadError
@@ -64,7 +64,7 @@ block content
                             option(value="") - Seleccione una opcion -
                             - var n = 1;
                                 while n < 4
-                                    option(value=n) #{n++}
+                                    option(value=n selected= propiedad ? propiedad.estacionamiento == n ? true : false : null) #{n++}
                         if errors && errors.estacionamientoPropiedadError != null 
                             include ../partials/error.pug
                                 span.text-red-600.text-xs.ml-1= errors.estacionamientoPropiedadError
@@ -74,7 +74,7 @@ block content
                             option(value="") - Seleccione una opcion -
                             - var n = 1;
                                 while n < 5
-                                    option(value=n) #{n++}
+                                    option(value=n selected= propiedad ? propiedad.banios == n ? true : false : null) #{n++}
                         if errors && errors.baniosPropiedadError != null 
                             include ../partials/error.pug
                                 span.text-red-600.text-xs.ml-1= errors.baniosPropiedadError
@@ -84,10 +84,10 @@ block content
                     #mapa.h-96
                 
                     div 
-                        p.calle
-                        input(type="hidden" id="calle" name="calle")
-                        input(type="hidden" id="lat" name="lat")
-                        input(type="hidden" id="lng" name="lng")
+                        p.calle=propiedad ? propiedad.calle : ""
+                        input(type="hidden" id="calle" name="calle" value=propiedad? propiedad.calle : "")
+                        input(type="hidden" id="lat" name="lat" value=propiedad? propiedad.lat : "")
+                        input(type="hidden" id="lng" name="lng" value=propiedad? propiedad.lng : "")
 
                 input(class="w-full py-3 rounded cursor-pointer bg-indigo-600 hover:bg-indigo-800 text-white font-bold uppercase" type="submit" value="Crear Propiedad")
 

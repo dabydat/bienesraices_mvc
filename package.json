@@ -9,7 +9,7 @@
     "server": "nodemon index.js",
     "css": "postcss public/css/tailwind.css -o public/css/app.css --watch",
     "js": "webpack --watch",
-    "dev": "concurrently \"npm run css\" \"npm run js\"",
+    "dev": "concurrently \"npm run server\" \"npm run css\" \"npm run js\"",
     "db:import":"node ./seed/seeder.js -import",
     "db:delete":"node ./seed/seeder.js -delete"
   },

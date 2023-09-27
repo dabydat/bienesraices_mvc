@@ -34,12 +34,13 @@ const savePropiedad = async (req, res) => {
     }
     const errors = await createErrors(req, 'createPropiedad');
     if (errors != null) {
-        const { titulo, descripcion, categoria, precio, habitaciones, estacionamiento, banios } = req.body;
+        const { titulo, descripcion, categoria, precio, habitaciones, estacionamiento, banios, lat, lng, calle } = req.body;
         components = errors != null ? { ...components, errors } : components;
-        components = { ...components, propiedad: { titulo, descripcion, categoria, precio, habitaciones, estacionamiento, banios } };
+        components = { ...components, propiedad: { titulo, descripcion, categoria, precio, habitaciones, estacionamiento, banios, lat, lng, calle } };
         return res.render('propiedades/create', components);
     }
-    console.log(errors);
+    
+    
 }
 
 export {

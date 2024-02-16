@@ -71,8 +71,8 @@ async function createErrors(req, form) {
             errors.baniosPropiedadError = element.msg
         }
     });
-
-    return resultado.array() == [] ? null : errors;
+    
+    return resultado.array().length <= 0 ? null : errors;
 }
 
 export {

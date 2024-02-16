@@ -7,7 +7,7 @@ import Usuario from "./Usuario.js";
 // Precio.hasOne(Propiedad);
 Propiedad.belongsTo(Precio, { foreignKey: 'precioId' });
 Propiedad.belongsTo(Categoria, { foreignKey: 'categoriaId' })
-Usuario.belongsTo(Propiedad, { foreignKey: 'usuarioId' });
+Propiedad.belongsTo(Usuario, { foreignKey: 'usuarioId' });
 
 export {
     Propiedad,

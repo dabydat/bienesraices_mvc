@@ -1,9 +1,10 @@
-import { findUserExistence, createUser, validateAccountByToken } from "../services/usuarioService.js";
-import { emailRegister, emailRecoverPassword } from "../helpers/email.js";
+import bcrypt from "bcrypt";
 import { createErrors } from "../helpers/errors.js";
 import { generarId, generarJWT } from "../helpers/token.js";
-import bcrypt from "bcrypt";
+import { emailRegister, emailRecoverPassword } from "../helpers/email.js";
+import { findUserExistence, createUser, validateAccountByToken } from "../services/usuarioService.js";
 
+import { PROPIEDADES } from "../utils/constantsInfo/routes.js";
 import { GLOBAL_ERROR } from "../utils/constantsInfo/errorMessages.js";
 import { GLOBAL_SUCCESS } from "../utils/constantsInfo/successMessages.js";
 
@@ -26,19 +27,19 @@ const sendLogin = async (req, res) => {
     let errors = await createErrors(req, 'login');
     // Validacion de usuario en la BD
     let userExists = await findUserExistence(req.body.email);
-    errors = req.body.email == '' || req.body.password == '' ? errors : (userExists == 'error' && req.body.email != '' ? { ...errors, userError: EMAIL_NOT_ASSIGNED } : (req.body.email != '' && userExists.confirmed != true ? { ...errors, userError: ACCOUNT_NOT_CONFIRMED } : (!userExists.verifyPassword(req.body.password) ? { ...errors, userError: INCORRECT_PASSWORD } : null)));
-    components = errors != null ? { ...components, errors } : components;
+    errors = req.body.email == '' || req.body.password == '' ? errors :
+        (userExists == 'error' && req.body.email != '' ? { ...errors, userError: EMAIL_NOT_ASSIGNED } :
+            (req.body.email != '' && userExists.confirmed != true ? { ...errors, userError: ACCOUNT_NOT_CONFIRMED } :
+                (!userExists.verifyPassword(req.body.password) ? { ...errors, userError: INCORRECT_PASSWORD } : null)));
+    
     if (errors != null) {
+        components = { ...components, errors };
         return res.render('auth/login', components);
     }
 
     if (userExists.verifyPassword(req.body.password)) {
-        // return res.render('auth/login', components);
         const token = generarJWT(userExists.id)
-
-        return res.cookie('_token', token, {
-            httpOnly:true,
-        }).redirect('/mis-propiedades');
+        return res.cookie('_token', token, { httpOnly: true, }).redirect(PROPIEDADES.HOME);
     }
 }
 
@@ -64,11 +65,7 @@ const sendRegister = async (req, res) => {
     const userCreated = await createUser(nombre, email, password);
 
     // Envia email de confirmacion
-    emailRegister({
-        nombre: userCreated.nombre,
-        email: userCreated.email,
-        token: userCreated.token
-    });
+    emailRegister({ nombre: userCreated.nombre, email: userCreated.email, token: userCreated.token });
 
     // Mostrar mensaje de confirmacion
     res.render('templates/mensaje', {
@@ -132,9 +129,7 @@ const sendResetPassword = async (req, res) => {
     await user.save();
 
     // Enviar Email
-    emailRecoverPassword({
-        email: user.email, nombre: user.nombre, token: user.token
-    });
+    emailRecoverPassword({ email: user.email, nombre: user.nombre, token: user.token });
 
     // Mostrar mensaje de confirmacion
     res.render('templates/mensaje', {

@@ -10,8 +10,8 @@
     "css": "postcss public/css/tailwind.css -o public/css/app.css --watch",
     "js": "webpack --watch",
     "dev": "concurrently \"npm run server\" \"npm run css\" \"npm run js\"",
-    "db:import":"node ./seed/seeder.js -import",
-    "db:delete":"node ./seed/seeder.js -delete"
+    "db:import": "node ./seed/seeder.js -import",
+    "db:delete": "node ./seed/seeder.js -delete"
   },
   "keywords": [
     "MVC",
@@ -38,7 +38,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.13",
     "concurrently": "^8.0.1",
-    "nodemon": "^2.0.20",
+    "nodemon": "^3.0.3",
     "postcss": "^8.4.21",
     "postcss-cli": "^10.1.0",
     "tailwindcss": "^3.2.4",
